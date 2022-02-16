@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Youtubes", "Youtubes\Youtubes.pyproj", "{B2B9CD3C-35C0-4870-A89D-0B68DD6CE239}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2B9CD3C-35C0-4870-A89D-0B68DD6CE239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B9CD3C-35C0-4870-A89D-0B68DD6CE239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EDD37EA-8848-4ABC-9E3E-5EC1368AC712}
+	EndGlobalSection
+EndGlobal
