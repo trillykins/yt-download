@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ConsoleApp2
+namespace DownloadYouTube
 {
     class Program
     {
@@ -46,54 +43,12 @@ namespace ConsoleApp2
 
             if (!File.Exists("yt-dlp.exe"))
             {
-                try
-                {
-                    Console.WriteLine("Downloading yt-dlp.exe...");
-                    using var client = new WebClient();
-                    var task = client.DownloadFileTaskAsync("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe", "yt-dlp.exe");
-                    await task;
-                    if (task.IsCompletedSuccessfully) Console.WriteLine("yt-dlp downloaded successfully!");
-                    else throw new Exception("Did not succesfully download yt-dlp!");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    File.Delete("yt-dlp.exe");
-                    Environment.Exit(0);
-                }
+                await DownloadRequiredFile.DownloadAsync(url: "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe", filename: "yt-dlp.exe");
             }
 
             if (!File.Exists("ffmpeg.exe"))
             {
-                try
-                {
-                    Console.WriteLine("Downloading ffmpeg.exe...");
-                    using var client = new WebClient();
-                    var task = client.DownloadFileTaskAsync("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", "ffmpeg-release-essentials.zip");
-                    await task;
-                    if (task.IsCompletedSuccessfully)
-                    {
-                        Console.WriteLine("ffmpeg downloaded successfully!");
-                        using (ZipArchive archive = ZipFile.OpenRead("ffmpeg-release-essentials.zip"))
-                        {
-                            foreach (ZipArchiveEntry entry in archive.Entries.Where(e => e.FullName.ToLower().EndsWith("bin/ffmpeg.exe")))
-                            {
-                                entry.ExtractToFile("ffmpeg.exe");
-                            }
-                        }
-                    }
-                    else throw new Exception("Did not succesfully download ffmpeg!");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    File.Delete("ffmpeg-release-essentials.zip");
-                    Environment.Exit(0);
-                }
-                finally
-                {
-                    File.Delete("ffmpeg-release-essentials.zip");
-                }
+                await DownloadRequiredFile.DownloadAndUnzipAsync(url: "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", filename: "ffmpeg-release-essentials.zip", specificFileToUnzipPath: "bin/ffmpeg.exe");
             }
 
             var proc = new Process
@@ -108,6 +63,7 @@ namespace ConsoleApp2
                     CreateNoWindow = true
                 }
             };
+
             proc.Start();
             var previousLineLength = 0;
             var addNewline = false;
@@ -135,14 +91,8 @@ namespace ConsoleApp2
                     errors.Add(errorLine);
                 }
             }
+            // Adding errors to the end of the output for readability
             Console.WriteLine(string.Join('\n', errors));
-        }
-
-        enum ARGUMENT_TYPE
-        {
-            MP3_AUDIO_ONLY,
-            MP4_AUDIO_ONLY,
-            M4A_VIDEO_AND_AUDIO
         }
     }
 }

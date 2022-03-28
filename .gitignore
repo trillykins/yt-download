@@ -553,6 +553,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Avoid pushing executables and zip files
-yt-dlp.exe
-ffmpeg.exe
+*yt-dlp.exe
+*ffmpeg.exe
 **/*.zip
