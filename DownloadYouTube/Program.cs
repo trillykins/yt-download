@@ -8,7 +8,7 @@ namespace ConsoleApp2
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             var urls = new[] {
                 "https://www.youtube.com/watch?v=GZ6ltKuGY9Q",
@@ -22,11 +22,11 @@ namespace ConsoleApp2
 
             foreach (var url in urls)
             {
-                await downloadYouTubeVideo(url, ARGUMENT_TYPE.M4A_VIDEO_AND_AUDIO);
+                await DownloadYouTubeVideo(url, ARGUMENT_TYPE.M4A_VIDEO_AND_AUDIO);
             }
         }
 
-        private static async Task downloadYouTubeVideo(string url, ARGUMENT_TYPE argumentType)
+        private static async Task DownloadYouTubeVideo(string url, ARGUMENT_TYPE argumentType)
         {
             url = url.Trim();
             if (!url.StartsWith('\"')) url = "\"" + url;
