@@ -551,3 +551,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Avoid pushing executables and zip files
+yt-dlp.exe
+ffmpeg.exe
+**/*.zip
