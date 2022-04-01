@@ -13,12 +13,6 @@ namespace DownloadYouTube
         {
             var urls = new[] {
                 "https://www.youtube.com/watch?v=GZ6ltKuGY9Q",
-                //"https://www.youtube.com/watch?v=FD_-b06JJtE",
-                //"https://www.youtube.com/watch?v=Huljt0g0Y3Q",
-                //"https://www.youtube.com/watch?v=-naJR_rhkUM",
-                //"https://www.youtube.com/watch?v=ByRKF1INOcU",
-                //"https://www.youtube.com/watch?v=89sOyZdtVA0",
-                //"https://www.youtube.com/watch?v=2-gQCZL8VA8"
             };
 
             foreach (var url in urls)
@@ -51,20 +45,16 @@ namespace DownloadYouTube
                 await DownloadRequiredFile.DownloadAndUnzipAsync(url: "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", filename: "ffmpeg-release-essentials.zip", specificFileToUnzipPath: "bin/ffmpeg.exe");
             }
 
-            var proc = new Process
+            using Process proc = Process.Start(new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "yt-dlp.exe",
-                    Arguments = argument,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                }
-            };
+                FileName = "yt-dlp.exe",
+                Arguments = argument,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            });
 
-            proc.Start();
             var previousLineLength = 0;
             var addNewline = false;
             var regex = new Regex(@"^(\[download\])\s+[0-9.]+(%)\s+(of)", RegexOptions.Compiled);
@@ -72,7 +62,6 @@ namespace DownloadYouTube
             while (!proc.StandardOutput.EndOfStream)
             {
                 string line = proc.StandardOutput.ReadLine();
-                string errorLine = proc.StandardError.ReadLine();
                 if (regex.IsMatch(line))
                 {
                     Console.Write($"\r{new string(' ', previousLineLength)}");
@@ -86,13 +75,13 @@ namespace DownloadYouTube
                     Console.WriteLine(line);
                     addNewline = false;
                 }
-                if (errorLine != null && errorLine != string.Empty)
-                {
-                    errors.Add(errorLine);
-                }
             }
-            // Adding errors to the end of the output for readability
-            Console.WriteLine(string.Join('\n', errors));
+            while (!proc.StandardError.EndOfStream)
+            {
+                string line = proc.StandardError.ReadLine();
+                Console.WriteLine(line);
+            }
+
         }
     }
 }
