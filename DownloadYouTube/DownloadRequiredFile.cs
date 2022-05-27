@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DownloadYouTube
@@ -25,13 +22,19 @@ namespace DownloadYouTube
         {
             try
             {
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                {
+                    throw new InvalidOperationException("Invalid uri!");
+                }
+
                 Console.WriteLine($"Downloading {filename}...");
-                using var client = new WebClient();
-                var task = client.DownloadFileTaskAsync(url, filename);
+                using var client = new HttpClient();
+                var task = client.GetByteArrayAsync(url);
                 await task;
                 if (task.IsCompletedSuccessfully)
                 {
                     Console.WriteLine($"Successully downloaded {filename} from {url}");
+                    await File.WriteAllBytesAsync(filename, task.Result);
                     return true;
                 }
                 else throw new Exception("Did not succesfully download ffmpeg!");
@@ -60,11 +63,12 @@ namespace DownloadYouTube
                             entry.ExtractToFile(entry.Name);
                             return true;
                         }
-                    } else
+                    }
+                    else
                     {
                         Console.WriteLine($"Unzipping: {entry.Name}");
                     }
-                    
+
                 }
                 if (specificFileToUnzipPath != null) return false;
                 return true;
